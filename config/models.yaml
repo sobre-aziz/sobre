@@ -1,0 +1,76 @@
+# Configuration des modèles IA pour Sobre
+# Source des données :
+# - Coûts : Tarifs publics des fournisseurs (Mistral AI, OpenAI, Meta)
+# - CO2 : Estimations basées sur des études comme "Carbon Footprint of AI Models" (arXiv:2111.02186)
+#       et rapports de l'ADEME sur l'impact environnemental du numérique
+
+models:
+  Mistral-7B:
+    name: "Mistral-7B"
+    description: "Modèle open-source de Mistral AI, léger et performant"
+    cost_per_token: 0.000002  # 0.002€ par 1k tokens
+    co2_per_token: 0.0005     # 0.5g CO2 par token (estimation)
+    provider: "Mistral AI"
+    category: "open-source"
+    
+  GPT-4:
+    name: "GPT-4"
+    description: "Modèle propriétaire de OpenAI, très performant mais coûteux"
+    cost_per_token: 0.00003   # 0.03€ par 1k tokens
+    co2_per_token: 0.001      # 1g CO2 par token (estimation)
+    provider: "OpenAI"
+    category: "proprietary"
+    
+  Llama-3:
+    name: "Llama-3"
+    description: "Modèle open-source de Meta, équilibre performance/coût"
+    cost_per_token: 0.0000015 # 0.0015€ par 1k tokens
+    co2_per_token: 0.0004    # 0.4g CO2 par token (estimation)
+    provider: "Meta"
+    category: "open-source"
+    
+  # Modèles supplémentaires pour la comparaison
+  Mistral-8x7B:
+    name: "Mistral-8x7B"
+    description: "Modèle Mixture of Experts de Mistral AI"
+    cost_per_token: 0.0000005
+    co2_per_token: 0.0003
+    provider: "Mistral AI"
+    category: "open-source"
+    
+  GPT-3.5-turbo:
+    name: "GPT-3.5-turbo"
+    description: "Version optimisée de GPT-3.5"
+    cost_per_token: 0.0000015
+    co2_per_token: 0.0008
+    provider: "OpenAI"
+    category: "proprietary"
+
+# Facteur de conversion CO2 -> km en voiture (moyenne : 200g CO2/km)
+co2_to_car_km_factor: 0.2
+
+# Seuils pour les badges de maturité (en € et g CO2)
+badges:
+  gold:
+    name: "🥇 Or - Expert"
+    max_cost: 10
+    max_co2: 50
+    score: 100
+    
+  silver:
+    name: "🥈 Argent - Intermédiaire"
+    max_cost: 100
+    max_co2: 500
+    score: 75
+    
+  bronze:
+    name: "🥉 Bronze - Débutant"
+    max_cost: 500
+    max_co2: 2500
+    score: 50
+    
+  red:
+    name: "❌ Rouge - À améliorer"
+    max_cost: 10000
+    max_co2: 50000
+    score: 25
