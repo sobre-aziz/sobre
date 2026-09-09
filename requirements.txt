@@ -1,5 +1,21 @@
+# Dépendances pour Sobre - GreenOps + FinOps pour les PME
+# Version 2.0 - Ciblant les PME avec Tracker Shadow AI et rapports CSRD
+
+# Core
 streamlit>=1.28.0
 pandas>=2.0.3
+
+# Visualisation
 plotly>=5.15.0
+
+# Configuration et données
 pyyaml>=6.0
+
+# Génération de rapports PDF
+fpdf2>=2.7.0
+
+# Lecture de fichiers PDF (optionnel, pour l'import de factures PDF)
+# pdfplumber>=0.10.0
+
+# Requêtes HTTP (pour futures intégrations API)
 requests>=2.31.0

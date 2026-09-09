@@ -1,50 +1,183 @@
 # Configuration des modèles IA pour Sobre
-# Source des données :
-# - Coûts : Tarifs publics des fournisseurs (Mistral AI, OpenAI, Meta)
-# - CO2 : Estimations basées sur des études comme "Carbon Footprint of AI Models" (arXiv:2111.02186)
-#       et rapports de l'ADEME sur l'impact environnemental du numérique
+# Sources officielles :
+# - Coûts : Tarifs publics des fournisseurs (OpenAI, Mistral AI, Meta)
+#   - OpenAI Pricing: https://openai.com/pricing
+#   - Mistral AI Pricing: https://mistral.ai/pricing/
+#   - Meta Llama Pricing: https://aws.amazon.com/bedrock/llama/
+# - CO2 : Données scientifiques basées sur :
+#   - "Carbon Footprint of AI Models" (arXiv:2111.02186)
+#   - Microsoft Sustainability Report 2023
+#   - ADEME - Impact environnemental du numérique
+#
+# Note: Les valeurs CO2 sont des estimations moyennes par 1M tokens
+# Conversion: 1 kg CO2 = 1000 g CO2
 
 models:
-  Mistral-7B:
-    name: "Mistral-7B"
-    description: "Modèle open-source de Mistral AI, léger et performant"
-    cost_per_token: 0.000002  # 0.002€ par 1k tokens
-    co2_per_token: 0.0005     # 0.5g CO2 par token (estimation)
-    provider: "Mistral AI"
-    category: "open-source"
-    
+  # Modèles OpenAI
   GPT-4:
     name: "GPT-4"
-    description: "Modèle propriétaire de OpenAI, très performant mais coûteux"
-    cost_per_token: 0.00003   # 0.03€ par 1k tokens
-    co2_per_token: 0.001      # 1g CO2 par token (estimation)
+    description: "Modèle propriétaire de OpenAI, très performant"
+    cost_per_token_input: 0.00003    # 0.03€ par 1k tokens (input)
+    cost_per_token_output: 0.00006   # 0.06€ par 1k tokens (output)
+    co2_per_million_tokens: 0.3       # 0.3 kg CO2 par 1M tokens (300 g)
     provider: "OpenAI"
     category: "proprietary"
-    
-  Llama-3:
-    name: "Llama-3"
-    description: "Modèle open-source de Meta, équilibre performance/coût"
-    cost_per_token: 0.0000015 # 0.0015€ par 1k tokens
-    co2_per_token: 0.0004    # 0.4g CO2 par token (estimation)
-    provider: "Meta"
-    category: "open-source"
-    
-  # Modèles supplémentaires pour la comparaison
-  Mistral-8x7B:
-    name: "Mistral-8x7B"
-    description: "Modèle Mixture of Experts de Mistral AI"
-    cost_per_token: 0.0000005
-    co2_per_token: 0.0003
-    provider: "Mistral AI"
-    category: "open-source"
+    saas_type: "api"
     
   GPT-3.5-turbo:
     name: "GPT-3.5-turbo"
     description: "Version optimisée de GPT-3.5"
-    cost_per_token: 0.0000015
-    co2_per_token: 0.0008
+    cost_per_token_input: 0.0000015  # 0.0015€ par 1k tokens (input)
+    cost_per_token_output: 0.000002  # 0.002€ par 1k tokens (output)
+    co2_per_million_tokens: 0.2       # 0.2 kg CO2 par 1M tokens (200 g)
     provider: "OpenAI"
     category: "proprietary"
+    saas_type: "api"
+
+  # Modèles Mistral AI
+  Mistral-7B:
+    name: "Mistral-7B"
+    description: "Modèle open-source de Mistral AI, léger et performant"
+    cost_per_token_input: 0.000002   # 0.002€ par 1k tokens
+    cost_per_token_output: 0.000002  # 0.002€ par 1k tokens
+    co2_per_million_tokens: 0.05      # 0.05 kg CO2 par 1M tokens (50 g)
+    provider: "Mistral AI"
+    category: "open-source"
+    saas_type: "api"
+    
+  Mistral-8x7B:
+    name: "Mistral-8x7B"
+    description: "Modèle Mixture of Experts de Mistral AI"
+    cost_per_token_input: 0.0000005  # 0.0005€ par 1k tokens
+    cost_per_token_output: 0.0000005 # 0.0005€ par 1k tokens
+    co2_per_million_tokens: 0.03      # 0.03 kg CO2 par 1M tokens (30 g)
+    provider: "Mistral AI"
+    category: "open-source"
+    saas_type: "api"
+
+  # Modèles Meta
+  Llama-2-70B:
+    name: "Llama-2-70B"
+    description: "Modèle open-source de Meta"
+    cost_per_token_input: 0.000001   # 0.001€ par 1k tokens
+    cost_per_token_output: 0.000001  # 0.001€ par 1k tokens
+    co2_per_million_tokens: 0.03      # 0.03 kg CO2 par 1M tokens (30 g)
+    provider: "Meta"
+    category: "open-source"
+    saas_type: "api"
+    
+  Llama-3:
+    name: "Llama-3"
+    description: "Modèle open-source de Meta, nouvelle génération"
+    cost_per_token_input: 0.0000015  # 0.0015€ par 1k tokens
+    cost_per_token_output: 0.0000015 # 0.0015€ par 1k tokens
+    co2_per_million_tokens: 0.04      # 0.04 kg CO2 par 1M tokens (40 g)
+    provider: "Meta"
+    category: "open-source"
+    saas_type: "api"
+
+# SaaS avec IA (abonnements mensuels)
+saas_subscriptions:
+  ChatGPT-Plus:
+    name: "ChatGPT Plus"
+    description: "Abonnement premium à ChatGPT"
+    monthly_cost: 20.00              # 20€/mois
+    estimated_tokens_per_month: 1000000  # Estimation: 1M tokens/mois
+    co2_per_month: 0.3                # 0.3 kg CO2/mois (basé sur GPT-4)
+    provider: "OpenAI"
+    category: "saas"
+    saas_type: "subscription"
+    
+  ChatGPT-Enterprise:
+    name: "ChatGPT Enterprise"
+    description: "Abonnement entreprise pour ChatGPT"
+    monthly_cost: 40.00              # 40€/utilisateur/mois (estimation)
+    estimated_tokens_per_month: 5000000  # 5M tokens/mois
+    co2_per_month: 1.5                # 1.5 kg CO2/mois
+    provider: "OpenAI"
+    category: "saas"
+    saas_type: "subscription"
+    
+  Copilot:
+    name: "GitHub Copilot"
+    description: "Assistant IA pour le développement"
+    monthly_cost: 10.00              # 10€/mois
+    estimated_tokens_per_month: 500000   # 500K tokens/mois
+    co2_per_month: 0.15               # 0.15 kg CO2/mois
+    provider: "GitHub/Microsoft"
+    category: "saas"
+    saas_type: "subscription"
+    
+  Copilot-Business:
+    name: "GitHub Copilot Business"
+    description: "Version entreprise de Copilot"
+    monthly_cost: 19.00              # 19€/utilisateur/mois
+    estimated_tokens_per_month: 1000000  # 1M tokens/mois
+    co2_per_month: 0.3                # 0.3 kg CO2/mois
+    provider: "GitHub/Microsoft"
+    category: "saas"
+    saas_type: "subscription"
+    
+  Notion-AI:
+    name: "Notion AI"
+    description: "Assistant IA intégré à Notion"
+    monthly_cost: 10.00              # 10€/mois (en plus de l'abonnement Notion)
+    estimated_tokens_per_month: 250000   # 250K tokens/mois
+    co2_per_month: 0.075              # 0.075 kg CO2/mois
+    provider: "Notion"
+    category: "saas"
+    saas_type: "subscription"
+    
+  Midjourney:
+    name: "Midjourney"
+    description: "Génération d'images par IA"
+    monthly_cost: 30.00              # 30€/mois (plan de base)
+    estimated_images_per_month: 100       # 100 images/mois
+    co2_per_month: 0.5                 # 0.5 kg CO2/mois (estimation)
+    provider: "Midjourney"
+    category: "saas"
+    saas_type: "subscription"
+    
+  Canva-Magic:
+    name: "Canva Magic"
+    description: "Outils IA de Canva"
+    monthly_cost: 12.99              # 12.99€/mois
+    estimated_tokens_per_month: 200000   # 200K tokens/mois
+    co2_per_month: 0.06               # 0.06 kg CO2/mois
+    provider: "Canva"
+    category: "saas"
+    saas_type: "subscription"
+
+# Mots-clés pour la détection des abonnements IA
+ai_keywords:
+  - "ChatGPT"
+  - "GPT-4"
+  - "GPT-3"
+  - "Copilot"
+  - "Notion AI"
+  - "Midjourney"
+  - "Canva Magic"
+  - "Canva AI"
+  - "Jasper"
+  - "WriteSonic"
+  - "Grammarly AI"
+  - "Otter.ai"
+  - "Descript"
+  - "Runway"
+  - "Stable Diffusion"
+  - "DALL-E"
+  - "Anthropic"
+  - "Claude"
+  - "Mistral"
+  - "Llama"
+  - "API"
+  - "tokens"
+  - "IA"
+  - "AI"
+  - "Intelligence Artificielle"
+  - "Machine Learning"
+  - "LLM"
+  - "Large Language Model"
 
 # Facteur de conversion CO2 -> km en voiture (moyenne : 200g CO2/km)
 co2_to_car_km_factor: 0.2
@@ -53,24 +186,62 @@ co2_to_car_km_factor: 0.2
 badges:
   gold:
     name: "🥇 Or - Expert"
-    max_cost: 10
-    max_co2: 50
+    max_cost: 50
+    max_co2: 250
     score: 100
     
   silver:
-    name: "🥈 Argent - Intermédiaire"
-    max_cost: 100
-    max_co2: 500
-    score: 75
+    name: "🥈 Argent - Avancé"
+    max_cost: 200
+    max_co2: 1000
+    score: 80
     
   bronze:
-    name: "🥉 Bronze - Débutant"
+    name: "🥉 Bronze - Intermédiaire"
     max_cost: 500
     max_co2: 2500
-    score: 50
+    score: 60
     
-  red:
-    name: "❌ Rouge - À améliorer"
-    max_cost: 10000
-    max_co2: 50000
-    score: 25
+  sufficient:
+    name: "✅ Suffisant"
+    max_cost: 1000
+    max_co2: 5000
+    score: 40
+    
+  insufficient:
+    name: "⚠️ Insuffisant"
+    max_cost: 5000
+    max_co2: 25000
+    score: 20
+
+# Seuils pour le score GreenOps (A à E)
+greenops_scores:
+  A:
+    name: "A - Excellent"
+    max_cost_per_employee: 10
+    max_co2_per_employee: 50
+    min_dormant_licenses: 95  # % de licences actives
+    
+  B:
+    name: "B - Bon"
+    max_cost_per_employee: 25
+    max_co2_per_employee: 125
+    min_dormant_licenses: 90
+    
+  C:
+    name: "C - Moyen"
+    max_cost_per_employee: 50
+    max_co2_per_employee: 250
+    min_dormant_licenses: 80
+    
+  D:
+    name: "D - À améliorer"
+    max_cost_per_employee: 100
+    max_co2_per_employee: 500
+    min_dormant_licenses: 60
+    
+  E:
+    name: "E - Critique"
+    max_cost_per_employee: 1000
+    max_co2_per_employee: 5000
+    min_dormant_licenses: 0
