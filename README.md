@@ -352,8 +352,8 @@ Ce projet est sous licence **MIT** - voir le fichier [LICENSE](LICENSE) pour plu
 ## 📞 Contact
 
 - **Auteur** : [Aziz](https://github.com/sobre-aziz)
-- **Email** : [aziz@example.com](mailto:aziz@example.com) *(à remplacer)*
-- **LinkedIn** : [LinkedIn](https://linkedin.com/in/aziz) *(à remplacer)*
+- **Email** : [telliliaziz5@gmail.com](mailto:telliliaziz5@gmail.com) 
+- **LinkedIn** : [LinkedIn](https://www.linkedin.com/in/aziz-tellili-629730252/) 
 - **Projet** : [GitHub](https://github.com/sobre-aziz/sobre)
 
 ---
