@@ -1,0 +1,77 @@
+{
+  "sources": {
+    "OpenAI": {
+      "api_url": "https://openai.com/api/pricing/",
+      "pricing_page": "https://openai.com/pricing",
+      "models": ["GPT-4", "GPT-3.5-turbo"],
+      "co2_source": "arXiv:2111.02186",
+      "co2_url": "https://arxiv.org/abs/2111.02186"
+    },
+    "Mistral AI": {
+      "api_url": "https://api.mistral.ai/v1/models",
+      "pricing_page": "https://mistral.ai/pricing/",
+      "models": ["Mistral-7B", "Mistral-8x7B"],
+      "co2_source": "ADEME",
+      "co2_url": "https://www.ademe.fr/"
+    },
+    "Meta": {
+      "api_url": "https://aws.amazon.com/bedrock/llama/pricing/",
+      "pricing_page": "https://aws.amazon.com/bedrock/llama/",
+      "models": ["Llama-2-70B", "Llama-3"],
+      "co2_source": "arXiv:2111.02186"
+    },
+    "Google": {
+      "api_url": "https://cloud.google.com/vertex-ai/pricing",
+      "pricing_page": "https://cloud.google.com/vertex-ai/pricing",
+      "models": ["Gemini-1.5-Pro"],
+      "co2_source": "Google Sustainability Report"
+    },
+    "Anthropic": {
+      "api_url": "https://www.anthropic.com/api/pricing",
+      "pricing_page": "https://www.anthropic.com/pricing",
+      "models": ["Claude-3-Sonnet", "Claude-3-Haiku"],
+      "co2_source": "Anthropic Documentation"
+    },
+    "Cohere": {
+      "api_url": "https://cohere.com/pricing",
+      "pricing_page": "https://cohere.com/pricing",
+      "models": ["Command-R"],
+      "co2_source": "Cohere Sustainability"
+    },
+    "SaaS": {
+      "ChatGPT-Plus": {
+        "pricing_page": "https://openai.com/pricing",
+        "co2_source": "Microsoft Sustainability Report 2023"
+      },
+      "ChatGPT-Enterprise": {
+        "pricing_page": "https://openai.com/pricing",
+        "co2_source": "Microsoft Sustainability Report 2023"
+      },
+      "Copilot": {
+        "pricing_page": "https://github.com/features/copilot",
+        "co2_source": "Microsoft Sustainability Report 2023"
+      },
+      "Notion-AI": {
+        "pricing_page": "https://www.notion.so/ai",
+        "co2_source": "Notion Documentation"
+      },
+      "Midjourney": {
+        "pricing_page": "https://www.midjourney.com/",
+        "co2_source": "Midjourney Documentation"
+      },
+      "Canva-Magic": {
+        "pricing_page": "https://www.canva.com/magic/",
+        "co2_source": "Canva Sustainability"
+      }
+    }
+  },
+  "co2_factors": {
+    "default_api": 0.3,
+    "default_saas": 0.1,
+    "car_factor": 0.2
+  },
+  "update_frequency": {
+    "pricing": "daily",
+    "co2": "weekly"
+  }
+}
