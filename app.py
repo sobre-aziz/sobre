@@ -14,6 +14,7 @@ Fonctionnalités:
 """
 
 import streamlit as st
+from streamlit import cache_data
 import pandas as pd
 import plotly.express as px
 import tempfile
@@ -57,39 +58,119 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Thème personnalisé
+# Thème personnalisé avec support du mode sombre
 st.markdown("""
 <style>
+    /* Thème clair (par défaut) */
     .reportview-container .main .block-container {
         background-color: #f8f9fa;
     }
     .stApp {
         background-color: #f8f9fa;
     }
+    
+    /* Mode sombre Streamlit */
+    @media (prefers-color-scheme: dark) {
+        .stApp, .reportview-container .main .block-container {
+            background-color: #0e1117;
+        }
+        .stTextInput, .stNumberInput, .stSelectbox, .stTextArea {
+            background-color: #262730;
+            color: #fafafa;
+        }
+        .stDataFrame {
+            background-color: #262730;
+            color: #fafafa;
+        }
+    }
+    
+    /* Boutons */
     .stButton>button {
         background-color: #2E86C1;
         color: white;
         border: none;
         border-radius: 5px;
+        font-weight: bold;
     }
     .stButton>button:hover {
         background-color: #28B463;
     }
-    .stSelectbox, .stNumberInput, .stTextInput {
+    
+    /* Champs de saisie */
+    .stSelectbox, .stNumberInput, .stTextInput, .stTextArea {
         border-radius: 5px;
+        border: 1px solid #ccc;
     }
+    
+    /* Mode sombre pour les champs */
+    @media (prefers-color-scheme: dark) {
+        .stSelectbox, .stNumberInput, .stTextInput, .stTextArea {
+            border-color: #4a4a4a;
+        }
+    }
+    
+    /* Titres */
     h1 {
         color: #2E86C1;
     }
     h2, h3 {
         color: #28B463;
     }
+    
+    /* Mode sombre pour les titres */
+    @media (prefers-color-scheme: dark) {
+        h1 {
+            color: #4da6ff;
+        }
+        h2, h3 {
+            color: #4ade80;
+        }
+    }
+    
+    /* Cartes de métriques */
     .metric-card {
         background-color: white;
         padding: 15px;
         border-radius: 10px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        color: #333;
     }
+    
+    /* Mode sombre pour les cartes */
+    @media (prefers-color-scheme: dark) {
+        .metric-card {
+            background-color: #1e1e1e;
+            color: #fafafa;
+            border: 1px solid #4a4a4a;
+        }
+    }
+    
+    /* Texte général */
+    .stMarkdown, .stText, .stCaption {
+        color: #333;
+    }
+    
+    /* Mode sombre pour le texte */
+    @media (prefers-color-scheme: dark) {
+        .stMarkdown, .stText, .stCaption {
+            color: #fafafa;
+        }
+    }
+    
+    /* Tableaux */
+    .dataframe {
+        background-color: white;
+        color: #333;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .dataframe {
+            background-color: #262730;
+            color: #fafafa;
+        }
+    }
+    
+    /* Tooltips */
     .tooltip {
         position: relative;
         display: inline-block;
@@ -115,8 +196,42 @@ st.markdown("""
         visibility: visible;
         opacity: 1;
     }
+    
+    /* Info boxes */
+    .stAlert {
+        border-radius: 5px;
+    }
+    
+    /* Sidebar */
+    .css-1d391kg {
+        background-color: #f8f9fa;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .css-1d391kg {
+            background-color: #0e1117;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
+
+
+# Fonctions de calcul avec cache
+@cache_data
+def cached_calculate_api_cost(model_name, input_tokens, output_tokens=0):
+    from utils.cost_calculator import calculate_api_cost
+    return calculate_api_cost(model_name, input_tokens, output_tokens)
+
+@cache_data
+def cached_calculate_api_carbon(model_name, total_tokens):
+    from utils.carbon_calculator import calculate_api_carbon
+    return calculate_api_carbon(model_name, total_tokens)
+
+@cache_data
+def cached_detect_ai_subscriptions(data, name_column, description_column=None):
+    from utils.subscription_tracker import detect_ai_subscriptions
+    return detect_ai_subscriptions(data, name_column, description_column)
+
 
 # Initialiser l'historique et les données dans la session
 if "history" not in st.session_state:
@@ -272,7 +387,7 @@ if mode == "Tracker Shadow AI (Recommandé)":
             else:
                 # Détecter les abonnements IA
                 with st.spinner("🔍 Détection des abonnements IA en cours..."):
-                    detected_subs = detect_ai_subscriptions(
+                    detected_subs = cached_detect_ai_subscriptions(
                         df,
                         name_column=selected_name_col,
                         description_column=selected_date_col
@@ -379,18 +494,37 @@ if mode == "Tracker Shadow AI (Recommandé)":
                             )
                             st.plotly_chart(fig_carbon, use_container_width=True)
                     
-                    # Détecter les licences dormantes (simplifié : toutes les licences sont considérées comme actives pour l'instant)
-                    # En production, il faudrait des données d'utilisation
+                    # Sélection manuelle des licences dormantes
+                    st.subheader("\ud83d\udd27 Gestion des Licences Dormantes")
+                    st.markdown("""
+                    **Sélectionnez les abonnements que vous pensez être inutilisés** (non utilisés depuis 30+ jours).
+                    Ces informations seront utilisées pour calculer les économies potentielles.
+                    """)
+                    
+                    # Créer une liste de checkbox pour sélectionner les licences dormantes
+                    dormant_selection = []
+                    if saas_results:
+                        st.write("Cochez les abonnements dormants:")
+                        for idx, saas in enumerate(saas_results):
+                            is_dormant = st.checkbox(
+                                f"{saas['name']} (Coût: {saas['monthly_cost']:.2f} €/mois)",
+                                key=f"dormant_{idx}",
+                                help=f"Cochez si {saas['name']} n'est pas utilisé depuis plus de 30 jours"
+                            )
+                    # Détecter les licences dormantes avec sélection manuelle
                     dormant_licenses = identify_dormant_licenses(
                         detected_subs,
-                        usage_data=None,  # Pas de données d'utilisation pour l'instant
-                        threshold_days=30
+                        usage_data=None,
+                        threshold_days=30,
+                        manual_selection=dormant_selection
                     )
                     
                     if dormant_licenses:
-                        st.warning(f"⚠️ **{len(dormant_licenses)} licence(s) dormante(s) détectée(s)**")
+                        st.warning(f"\u26a0\ufe0f **{len(dormant_licenses)} licence(s) dormante(s) identifiée(s)**")
                         dormant_df = pd.DataFrame(dormant_licenses)
                         st.dataframe(dormant_df, use_container_width=True)
+                    else:
+                        st.info("\u2705 Aucune licence dormante n'a \u00e9t\u00e9 identifiée.")
                     
                     # Calculer le score GreenOps
                     if number_of_employees > 0:
@@ -482,7 +616,7 @@ if mode == "Tracker Shadow AI (Recommandé)":
                                     greenops_result=greenops_result if 'greenops_result' in locals() else None,
                                     saas_count=len(saas_results),
                                     dormant_count=len(dormant_licenses),
-                                    output_path="rapport_sobre_resume.pdf"
+                                    output_path=f"reports/rapport_sobre_resume_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
                                 )
                                 
                                 if result["success"]:
@@ -513,7 +647,7 @@ if mode == "Tracker Shadow AI (Recommandé)":
                                     saas_subscriptions=saas_results,
                                     dormant_licenses=dormant_licenses,
                                     recommendations=recommendations if 'recommendations' in locals() else [],
-                                    output_path="rapport_sobre_csrd.pdf"
+                                    output_path=f"reports/rapport_sobre_csrd_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
                                 )
                                 
                                 if result["success"]:
@@ -585,14 +719,14 @@ elif mode == "Calculateur API":
     if st.button("🔍 Calculer", type="primary", use_container_width=True):
         with st.spinner("Calcul en cours..."):
             # Calculer le coût
-            cost_result = calculate_api_cost(
+            cost_result = cached_calculate_api_cost(
                 model_name=model,
                 input_tokens=input_tokens,
                 output_tokens=output_tokens
             )
             
             # Calculer le CO2
-            carbon_result = calculate_api_carbon(
+            carbon_result = cached_calculate_api_carbon(
                 model_name=model,
                 total_tokens=input_tokens + output_tokens
             )
@@ -702,8 +836,8 @@ elif mode == "Comparaison Modèles":
             input_tokens = tokens // 2
             output_tokens = tokens - input_tokens
             
-            cost_result = calculate_api_cost(model_name, input_tokens, output_tokens)
-            carbon_result = calculate_api_carbon(model_name, tokens)
+            cost_result = cached_calculate_api_cost(model_name, input_tokens, output_tokens)
+            carbon_result = cached_calculate_api_carbon(model_name, tokens)
             
             comparison_results.append({
                 "modèle": model_name,
@@ -888,7 +1022,7 @@ elif mode == "Générateur de Rapports":
                         greenops_result=greenops_result,
                         saas_count=manual_saas_count,
                         dormant_count=manual_dormant_count,
-                        output_path="rapport_manuel_resume.pdf"
+                        output_path=f"reports/rapport_manuel_resume_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
                     )
                     
                     if result["success"]:
@@ -942,7 +1076,7 @@ elif mode == "Générateur de Rapports":
                         saas_subscriptions=saas_subscriptions,
                         dormant_licenses=dormant_licenses,
                         recommendations=recommendations,
-                        output_path="rapport_manuel_csrd.pdf"
+                        output_path=f"reports/rapport_manuel_csrd_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
                     )
                     
                     if result["success"]:

@@ -105,7 +105,8 @@ def detect_ai_subscriptions(
 def identify_dormant_licenses(
     subscriptions: List[Dict],
     usage_data: Optional[List[Dict]] = None,
-    threshold_days: int = 30
+    threshold_days: int = 30,
+    manual_selection: Optional[List[str]] = None
 ) -> List[Dict]:
     """
     Identifie les licences dormantes (non utilisées) parmi les abonnements.
@@ -114,13 +115,28 @@ def identify_dormant_licenses(
         subscriptions: Liste des abonnements (résultat de detect_ai_subscriptions).
         usage_data: Liste de données d'utilisation (optionnel).
         threshold_days: Nombre de jours sans utilisation pour être considéré comme dormant.
+        manual_selection: Liste de noms de SaaS marqués comme dormants manuellement.
         
     Returns:
         List[Dict]: Liste des licences dormantes avec détails.
     """
     dormant_licenses = []
     
-    # Si pas de données d'utilisation, on ne peut pas détecter les licences dormantes
+    # Si une sélection manuelle est fournie, l'utiliser
+    if manual_selection:
+        for sub in subscriptions:
+            if sub.get('name') in manual_selection or sub.get('matched_saas') in manual_selection:
+                dormant_licenses.append({
+                    **sub,
+                    "status": "dormant",
+                    "reason": "manual_selection",
+                    "days_inactive": threshold_days + 1,  # Marqué comme dormant
+                    "last_used": "N/A (sélection manuelle)"
+                })
+        return dormant_licenses
+    
+    # Si pas de données d'utilisation, retourner une liste vide
+    # (au lieu de bloquer l'analyse)
     if usage_data is None:
         return dormant_licenses
     
