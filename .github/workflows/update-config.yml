@@ -2,10 +2,8 @@ name: Update Config (Pricing & CO2 Factors)
 
 on:
   schedule:
-    # Exécuter tous les jours à 00:00 UTC (minuit)
     - cron: '0 0 * * *'
   workflow_dispatch:
-    # Permettre de déclencher manuellement
     inputs:
       force_update:
         description: 'Forcer la mise à jour même si le cache est valide'
@@ -30,32 +28,30 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install requests pyyaml
     
     - name: Run config updater
       id: update
       run: |
         python -c "
-        import sys
+        import sys, json
         sys.path.insert(0, '.')
         from utils.config_updater import update_config
-        import json
-        
+
         results = update_config()
-        
         total_success = (
             len(results.get('models_pricing', {}).get('success', [])) +
             len(results.get('saas_pricing', {}).get('success', [])) +
             len(results.get('co2_factors', {}).get('success', []))
         )
-        
-        print(f'update_results={json.dumps(results)}')
-        
-        if total_success > 0:
-            print('CHANGES_DETECTED=true')
-        else:
-            print('CHANGES_DETECTED=false')
-        " >> $GITHUB_OUTPUT
+
+        with open('/tmp/update_results.json', 'w') as f:
+            json.dump(results, f)
+        with open('/tmp/changes_detected.txt', 'w') as f:
+            f.write('true' if total_success > 0 else 'false')
+        "
+
+        echo "update_results=$(cat /tmp/update_results.json)" >> $GITHUB_OUTPUT
+        echo "CHANGES_DETECTED=$(cat /tmp/changes_detected.txt)" >> $GITHUB_OUTPUT
     
     - name: Check for changes
       id: check_changes
