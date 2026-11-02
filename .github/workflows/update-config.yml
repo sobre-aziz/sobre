@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # Nécessaire pour avoir l'historique complet
+        fetch-depth: 0
     
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -40,50 +40,26 @@ jobs:
         sys.path.insert(0, '.')
         from utils.config_updater import update_config
         import json
-        import os
         
-        try:
-            results = update_config()
-            
-            # Compter les succès et échecs
-            total_success = (
-                len(results.get('models_pricing', {}).get('success', [])) +
-                len(results.get('saas_pricing', {}).get('success', [])) +
-                len(results.get('co2_factors', {}).get('success', []))
-            )
-            total_failed = (
-                len(results.get('models_pricing', {}).get('failed', [])) +
-                len(results.get('saas_pricing', {}).get('failed', [])) +
-                len(results.get('co2_factors', {}).get('failed', []))
-            )
-            
-            print(f'Total success: {total_success}')
-            print(f'Total failed: {total_failed}')
-            
-            # Ecrire les résultats dans GITHUB_OUTPUT
-            with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-                f.write(f'update_results={json.dumps(results)}\n')
-                
-            # Déterminer si on doit commiter
-            if total_success > 0:
-                with open(os.environ['GITHUB_ENV'], 'a') as f:
-                    f.write('CHANGES_DETECTED=true\n')
-            else:
-                with open(os.environ['GITHUB_ENV'], 'a') as f:
-                    f.write('CHANGES_DETECTED=false\n')
-                
-        except Exception as e:
-            print(f'Error: {e}')
-            with open(os.environ['GITHUB_ENV'], 'a') as f:
-                f.write('CHANGES_DETECTED=false\n')
-            sys.exit(1)
-        "
+        results = update_config()
+        
+        total_success = (
+            len(results.get('models_pricing', {}).get('success', [])) +
+            len(results.get('saas_pricing', {}).get('success', [])) +
+            len(results.get('co2_factors', {}).get('success', []))
+        )
+        
+        print(f'update_results={json.dumps(results)}')
+        
+        if total_success > 0:
+            print('CHANGES_DETECTED=true')
+        else:
+            print('CHANGES_DETECTED=false')
+        " >> $GITHUB_OUTPUT
     
     - name: Check for changes
       id: check_changes
       run: |
-        # Vérifier si des fichiers ont été modifiés
-        git status
         if [ -n "$(git status --porcelain)" ]; then
           echo "CHANGES=true" >> $GITHUB_OUTPUT
         else
@@ -91,19 +67,16 @@ jobs:
         fi
     
     - name: Commit and push changes
-      if: env.CHANGES_DETECTED == 'true' || steps.check_changes.outputs.CHANGES == 'true'
+      if: steps.update.outputs.CHANGES_DETECTED == 'true' || steps.check_changes.outputs.CHANGES == 'true'
       run: |
         git config --global user.name "github-actions"
         git config --global user.email "github-actions@github.com"
         
-        # Ajouter tous les fichiers modifiés
         git add config/models.yaml config/sources.yaml .cache/config_cache.json .cache/last_update.txt
         
-        # Créer un message de commit
         TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S")
         git commit -m "🔄 Auto-update: Pricing and CO2 factors (${TIMESTAMP})"
         
-        # Pousser les changements
         git push origin main
         
         echo "Configuration mise à jour et poussée vers le dépôt."
@@ -138,7 +111,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Notify on success
-      if: success() && (env.CHANGES_DETECTED == 'true' || steps.check_changes.outputs.CHANGES == 'true')
+      if: success() && (steps.update.outputs.CHANGES_DETECTED == 'true' || steps.check_changes.outputs.CHANGES == 'true')
       uses: actions/github-script@v7
       with:
         script: |
@@ -190,14 +163,12 @@ jobs:
         import sys
         sys.path.insert(0, '.')
         from utils.config_updater import get_update_status
-        import json
         
         status = get_update_status()
         print('Last update:', status.get('last_update'))
         print('Models count:', status.get('models_count'))
         print('SaaS count:', status.get('saas_count'))
         
-        # Vérifier que la configuration est valide
         import yaml
         try:
             with open('config/models.yaml', 'r') as f:
