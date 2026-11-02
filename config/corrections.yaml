@@ -1,0 +1,21 @@
+# config/corrections.yaml
+# Fichier pour stocker les corrections manuelles de détection IA
+# Format: liste de corrections avec nom, type, raison, date, utilisateur
+# Ce fichier est créé vide et sera rempli par les utilisateurs
+
+corrections: []
+
+# Exemple de structure pour ajouter une correction:
+# corrections:
+#   - nom: "Mailchimp"
+#     type: "non_ia"  # ou "ia"
+#     modèle: null  # Optionnel: modèle sous-jacent si type="ia"
+#     raison: "Faux positif : contient 'mail' mais pas d'IA"
+#     date: "2024-11-01"
+#     utilisateur: "admin@sobre.fr"
+#   - nom: "Mon SaaS Custom"
+#     type: "ia"
+#     modèle: "GPT-4"  # Optionnel
+#     raison: "Utilise GPT-4 en backend"
+#     date: "2024-11-01"
+#     utilisateur: "admin@sobre.fr"
