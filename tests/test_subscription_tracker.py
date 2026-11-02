@@ -10,7 +10,7 @@ import tempfile
 import pandas as pd
 import pytest
 
-from utils.subscription_tracker import (AI_KEYWORDS, detect_ai_subscriptions,
+from utils.subscription_tracker import (detect_ai_subscriptions,
                                         identify_dormant_licenses,
                                         process_uploaded_file,
                                         validate_uploaded_file)
@@ -124,7 +124,7 @@ class TestIdentifyDormantLicenses:
 
     def test_active_license(self):
         """Test avec une licence active (utilisée récemment)."""
-        from datetime import datetime, timedelta
+        from datetime import datetime
 
         subscriptions = [{"name": "ChatGPT Plus"}]
         usage_data = [

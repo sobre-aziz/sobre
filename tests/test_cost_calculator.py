@@ -6,8 +6,7 @@ Exécutez avec: pytest tests/test_cost_calculator.py -v
 
 import pytest
 
-from utils.cost_calculator import (MODELS, SAAS_SUBSCRIPTIONS,
-                                   calculate_api_cost, calculate_saas_cost,
+from utils.cost_calculator import (calculate_api_cost, calculate_saas_cost,
                                    calculate_total_cost,
                                    get_model_cost_per_token,
                                    get_saas_monthly_cost)
@@ -81,8 +80,6 @@ class TestCalculateApiCost:
             custom_output_cost=0.00002,
         )
 
-        expected_input_cost = 1000 * 0.00001  # 0.01€
-        expected_output_cost = 500 * 0.00002  # 0.01€
         expected_total = 0.02
 
         assert result["total_cost"] == pytest.approx(expected_total, rel=1e-2)

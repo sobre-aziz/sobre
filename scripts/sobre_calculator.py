@@ -88,10 +88,10 @@ def get_recommendations(model: str, tokens: int, cost: float) -> List[str]:
 
     # Recommandation pour changer de modèle si trop cher
     if model == "GPT-4" and cost > 10:
-        recommendations.append("💡 Passez à Mistral-7B : -90% de coûts et -80% de CO₂.")
+        recommendations.append("💡 Passez à Mistral-7B : coûts et CO₂ réduits (voir calculs détaillés).")
     elif model == "GPT-3.5-turbo" and cost > 5:
         recommendations.append(
-            "💡 Passez à Llama-3 : -50% de coûts pour des performances similaires."
+            "💡 Passez à Llama-3 : coûts réduits pour des performances similaires (ESTIMÉ)."
         )
 
     # Recommandations sur la taille des prompts

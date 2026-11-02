@@ -1,387 +1,398 @@
-# Configuration des modèles IA pour Sobre
-# Sources officielles :
-# - Coûts : Tarifs publics des fournisseurs (OpenAI, Mistral AI, Meta)
-#   - OpenAI Pricing: https://openai.com/pricing
-#   - Mistral AI Pricing: https://mistral.ai/pricing/
-#   - Meta Llama Pricing: https://aws.amazon.com/bedrock/llama/
-# - CO2 : Données scientifiques basées sur :
-#   - "Carbon Footprint of AI Models" (arXiv:2111.02186)
-#   - Microsoft Sustainability Report 2023
-#   - ADEME - Impact environnemental du numérique
-#
-# Note: Les valeurs CO2 sont des estimations moyennes par 1M tokens
-# Conversion: 1 kg CO2 = 1000 g CO2
-
 models:
-  # Modèles OpenAI
   GPT-4:
-    name: "GPT-4"
-    description: "Modèle propriétaire de OpenAI, très performant"
-    cost_per_token_input: 0.00003    # 0.03€ par 1k tokens (input)
-    cost_per_token_output: 0.00006   # 0.06€ par 1k tokens (output)
-    co2_per_million_tokens: 0.3       # 0.3 kg CO2 par 1M tokens (300 g)
-    provider: "OpenAI"
-    category: "proprietary"
-    saas_type: "api"
-    
+    name: GPT-4
+    description: Modèle propriétaire de OpenAI, très performant
+    cost_per_token_input: 3.0e-05
+    cost_per_token_output: 6.0e-05
+    co2_per_million_tokens: 0.3
+    provider: OpenAI
+    category: proprietary
+    saas_type: api
+    source: https://openai.com/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   GPT-3.5-turbo:
-    name: "GPT-3.5-turbo"
-    description: "Version optimisée de GPT-3.5"
-    cost_per_token_input: 0.0000015  # 0.0015€ par 1k tokens (input)
-    cost_per_token_output: 0.000002  # 0.002€ par 1k tokens (output)
-    co2_per_million_tokens: 0.2       # 0.2 kg CO2 par 1M tokens (200 g)
-    provider: "OpenAI"
-    category: "proprietary"
-    saas_type: "api"
-
-  # Modèles Mistral AI
+    name: GPT-3.5-turbo
+    description: Version optimisée de GPT-3.5
+    cost_per_token_input: 1.5e-06
+    cost_per_token_output: 2.0e-06
+    co2_per_million_tokens: 0.2
+    provider: OpenAI
+    category: proprietary
+    saas_type: api
+    source: https://openai.com/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Mistral-7B:
-    name: "Mistral-7B"
-    description: "Modèle open-source de Mistral AI, léger et performant"
-    cost_per_token_input: 0.000002   # 0.002€ par 1k tokens
-    cost_per_token_output: 0.000002  # 0.002€ par 1k tokens
-    co2_per_million_tokens: 0.05      # 0.05 kg CO2 par 1M tokens (50 g)
-    provider: "Mistral AI"
-    category: "open-source"
-    saas_type: "api"
-    
+    name: Mistral-7B
+    description: Modèle open-source de Mistral AI, léger et performant
+    cost_per_token_input: 2.0e-06
+    cost_per_token_output: 2.0e-06
+    co2_per_million_tokens: 0.05
+    provider: Mistral AI
+    category: open-source
+    saas_type: api
+    source: https://mistral.ai/pricing/
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Mistral-8x7B:
-    name: "Mistral-8x7B"
-    description: "Modèle Mixture of Experts de Mistral AI"
-    cost_per_token_input: 0.0000005  # 0.0005€ par 1k tokens
-    cost_per_token_output: 0.0000005 # 0.0005€ par 1k tokens
-    co2_per_million_tokens: 0.03      # 0.03 kg CO2 par 1M tokens (30 g)
-    provider: "Mistral AI"
-    category: "open-source"
-    saas_type: "api"
-
-  # Modèles Meta
+    name: Mistral-8x7B
+    description: Modèle Mixture of Experts de Mistral AI
+    cost_per_token_input: 5.0e-07
+    cost_per_token_output: 5.0e-07
+    co2_per_million_tokens: 0.03
+    provider: Mistral AI
+    category: open-source
+    saas_type: api
+    source: https://mistral.ai/pricing/
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Llama-2-70B:
-    name: "Llama-2-70B"
-    description: "Modèle open-source de Meta"
-    cost_per_token_input: 0.000001   # 0.001€ par 1k tokens
-    cost_per_token_output: 0.000001  # 0.001€ par 1k tokens
-    co2_per_million_tokens: 0.03      # 0.03 kg CO2 par 1M tokens (30 g)
-    provider: "Meta"
-    category: "open-source"
-    saas_type: "api"
-    
+    name: Llama-2-70B
+    description: Modèle open-source de Meta
+    cost_per_token_input: 1.0e-06
+    cost_per_token_output: 1.0e-06
+    co2_per_million_tokens: 0.03
+    provider: Meta
+    category: open-source
+    saas_type: api
+    source: https://aws.amazon.com/bedrock/llama/
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Llama-3:
-    name: "Llama-3"
-    description: "Modèle open-source de Meta, nouvelle génération"
-    cost_per_token_input: 0.0000015  # 0.0015€ par 1k tokens
-    cost_per_token_output: 0.0000015 # 0.0015€ par 1k tokens
-    co2_per_million_tokens: 0.04      # 0.04 kg CO2 par 1M tokens (40 g)
-    provider: "Meta"
-    category: "open-source"
-    saas_type: "api"
-
-  # Modèles Google
+    name: Llama-3
+    description: Modèle open-source de Meta, nouvelle génération
+    cost_per_token_input: 1.5e-06
+    cost_per_token_output: 1.5e-06
+    co2_per_million_tokens: 0.04
+    provider: Meta
+    category: open-source
+    saas_type: api
+    source: https://ai.meta.com/llama/
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Gemini-1.5-Pro:
-    name: "Gemini-1.5-Pro"
-    description: "Modèle multimodal de Google, très performant"
-    cost_per_token_input: 0.0000035  # 0.0035€ par 1k tokens
-    cost_per_token_output: 0.0000105  # 0.0105€ par 1k tokens
-    co2_per_million_tokens: 0.25     # 0.25 kg CO2 par 1M tokens
-    provider: "Google"
-    category: "proprietary"
-    saas_type: "api"
-
-  # Modèles Anthropic
+    name: Gemini-1.5-Pro
+    description: Modèle multimodal de Google, très performant
+    cost_per_token_input: 3.5e-06
+    cost_per_token_output: 1.05e-05
+    co2_per_million_tokens: 0.25
+    provider: Google
+    category: proprietary
+    saas_type: api
+    source: https://cloud.google.com/vertex-ai/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Claude-3-Sonnet:
-    name: "Claude-3-Sonnet"
-    description: "Modèle de Claude 3, équilibre performance/coût"
-    cost_per_token_input: 0.000003  # 0.003€ par 1k tokens
-    cost_per_token_output: 0.000015  # 0.015€ par 1k tokens
-    co2_per_million_tokens: 0.22     # 0.22 kg CO2 par 1M tokens
-    provider: "Anthropic"
-    category: "proprietary"
-    saas_type: "api"
-
+    name: Claude-3-Sonnet
+    description: Modèle de Claude 3, équilibre performance/coût
+    cost_per_token_input: 3.0e-06
+    cost_per_token_output: 1.5e-05
+    co2_per_million_tokens: 0.22
+    provider: Anthropic
+    category: proprietary
+    saas_type: api
+    source: https://www.anthropic.com/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Claude-3-Haiku:
-    name: "Claude-3-Haiku"
-    description: "Modèle rapide et économique de Claude 3"
-    cost_per_token_input: 0.00000025  # 0.00025€ par 1k tokens
-    cost_per_token_output: 0.00000125  # 0.00125€ par 1k tokens
-    co2_per_million_tokens: 0.15     # 0.15 kg CO2 par 1M tokens
-    provider: "Anthropic"
-    category: "proprietary"
-    saas_type: "api"
-
-  # Modèles Cohere
+    name: Claude-3-Haiku
+    description: Modèle rapide et économique de Claude 3
+    cost_per_token_input: 2.5e-07
+    cost_per_token_output: 1.25e-06
+    co2_per_million_tokens: 0.15
+    provider: Anthropic
+    category: proprietary
+    saas_type: api
+    source: https://www.anthropic.com/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Command-R:
-    name: "Command-R"
-    description: "Modèle optimisé pour le raisonnement"
-    cost_per_token_input: 0.0000005  # 0.0005€ par 1k tokens
-    cost_per_token_output: 0.0000015  # 0.0015€ par 1k tokens
-    co2_per_million_tokens: 0.18     # 0.18 kg CO2 par 1M tokens
-    provider: "Cohere"
-    category: "proprietary"
-    saas_type: "api"
-
-aas_type: "api"
-
-# SaaS avec IA (abonnements mensuels)
+    name: Command-R
+    description: Modèle optimisé pour le raisonnement
+    cost_per_token_input: 5.0e-07
+    cost_per_token_output: 1.5e-06
+    co2_per_million_tokens: 0.18
+    provider: Cohere
+    category: proprietary
+    saas_type: api
+    source: https://cohere.com/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
+aas_type: api
 saas_subscriptions:
   ChatGPT-Plus:
-    name: "ChatGPT Plus"
-    description: "Abonnement premium à ChatGPT"
-    monthly_cost: 20.00              # 20€/mois
-    estimated_tokens_per_month: 1000000  # Estimation: 1M tokens/mois
-    co2_per_month: 0.3                # 0.3 kg CO2/mois (basé sur GPT-4)
-    provider: "OpenAI"
-    category: "saas"
-    saas_type: "subscription"
-    
+    name: ChatGPT Plus
+    description: Abonnement premium à ChatGPT
+    monthly_cost: 20.0
+    estimated_tokens_per_month: 1000000
+    co2_per_month: 0.3
+    provider: OpenAI
+    category: saas
+    saas_type: subscription
+    source: https://openai.com/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   ChatGPT-Enterprise:
-    name: "ChatGPT Enterprise"
-    description: "Abonnement entreprise pour ChatGPT"
-    monthly_cost: 40.00              # 40€/utilisateur/mois (estimation)
-    estimated_tokens_per_month: 5000000  # 5M tokens/mois
-    co2_per_month: 1.5                # 1.5 kg CO2/mois
-    provider: "OpenAI"
-    category: "saas"
-    saas_type: "subscription"
-    
+    name: ChatGPT Enterprise
+    description: Abonnement entreprise pour ChatGPT
+    monthly_cost: 40.0
+    estimated_tokens_per_month: 5000000
+    co2_per_month: 1.5
+    provider: OpenAI
+    category: saas
+    saas_type: subscription
+    source: https://openai.com/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Copilot:
-    name: "GitHub Copilot"
-    description: "Assistant IA pour le développement"
-    monthly_cost: 10.00              # 10€/mois
-    estimated_tokens_per_month: 500000   # 500K tokens/mois
-    co2_per_month: 0.15               # 0.15 kg CO2/mois
-    provider: "GitHub/Microsoft"
-    category: "saas"
-    saas_type: "subscription"
-    
+    name: GitHub Copilot
+    description: Assistant IA pour le développement
+    monthly_cost: 10.0
+    estimated_tokens_per_month: 500000
+    co2_per_month: 0.15
+    provider: GitHub/Microsoft
+    category: saas
+    saas_type: subscription
+    source: https://github.com/features/copilot
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Copilot-Business:
-    name: "GitHub Copilot Business"
-    description: "Version entreprise de Copilot"
-    monthly_cost: 19.00              # 19€/utilisateur/mois
-    estimated_tokens_per_month: 1000000  # 1M tokens/mois
-    co2_per_month: 0.3                # 0.3 kg CO2/mois
-    provider: "GitHub/Microsoft"
-    category: "saas"
-    saas_type: "subscription"
-    
+    name: GitHub Copilot Business
+    description: Version entreprise de Copilot
+    monthly_cost: 19.0
+    estimated_tokens_per_month: 1000000
+    co2_per_month: 0.3
+    provider: GitHub/Microsoft
+    category: saas
+    saas_type: subscription
+    source: https://github.com/features/copilot
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Notion-AI:
-    name: "Notion AI"
-    description: "Assistant IA intégré à Notion"
-    monthly_cost: 10.00              # 10€/mois (en plus de l'abonnement Notion)
-    estimated_tokens_per_month: 250000   # 250K tokens/mois
-    co2_per_month: 0.075              # 0.075 kg CO2/mois
-    provider: "Notion"
-    category: "saas"
-    saas_type: "subscription"
-    
+    name: Notion AI
+    description: Assistant IA intégré à Notion
+    monthly_cost: 10.0
+    estimated_tokens_per_month: 250000
+    co2_per_month: 0.075
+    provider: Notion
+    category: saas
+    saas_type: subscription
+    source: https://www.notion.so/ai
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Midjourney:
-    name: "Midjourney"
-    description: "Génération d'images par IA"
-    monthly_cost: 30.00              # 30€/mois (plan de base)
-    estimated_images_per_month: 100       # 100 images/mois
-    co2_per_month: 0.5                 # 0.5 kg CO2/mois (estimation)
-    provider: "Midjourney"
-    category: "saas"
-    saas_type: "subscription"
-    
+    name: Midjourney
+    description: Génération d'images par IA
+    monthly_cost: 30.0
+    estimated_images_per_month: 100
+    co2_per_month: 0.5
+    provider: Midjourney
+    category: saas
+    saas_type: subscription
+    source: https://www.midjourney.com/
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Canva-Magic:
-    name: "Canva Magic"
-    description: "Outils IA de Canva"
-    monthly_cost: 12.99              # 12.99€/mois
-    estimated_tokens_per_month: 200000   # 200K tokens/mois
-    co2_per_month: 0.06               # 0.06 kg CO2/mois
-    provider: "Canva"
-    category: "saas"
-    saas_type: "subscription"
-
+    name: Canva Magic
+    description: Outils IA de Canva
+    monthly_cost: 12.99
+    estimated_tokens_per_month: 200000
+    co2_per_month: 0.06
+    provider: Canva
+    category: saas
+    saas_type: subscription
+    source: https://www.canva.com/magic/
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Jasper-AI:
-    name: "Jasper AI"
-    description: "Outil de génération de contenu IA"
-    monthly_cost: 59.00              # 59$/mois (environ 55€)
-    estimated_tokens_per_month: 500000  # 500K tokens/mois
-    co2_per_month: 0.25              # 0.25 kg CO2/mois
-    provider: "Jasper"
-    category: "saas"
-    saas_type: "subscription"
-
+    name: Jasper AI
+    description: Outil de génération de contenu IA
+    monthly_cost: 59.0
+    estimated_tokens_per_month: 500000
+    co2_per_month: 0.25
+    provider: Jasper
+    category: saas
+    saas_type: subscription
+    source: https://www.jasper.ai/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   WriteSonic:
-    name: "WriteSonic"
-    description: "Assistant d'écriture IA"
-    monthly_cost: 19.00              # 19$/mois (environ 17.5€)
-    estimated_tokens_per_month: 250000  # 250K tokens/mois
-    co2_per_month: 0.125            # 0.125 kg CO2/mois
-    provider: "WriteSonic"
-    category: "saas"
-    saas_type: "subscription"
-
+    name: WriteSonic
+    description: Assistant d'écriture IA
+    monthly_cost: 19.0
+    estimated_tokens_per_month: 250000
+    co2_per_month: 0.125
+    provider: WriteSonic
+    category: saas
+    saas_type: subscription
+    source: https://writesonic.com/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Grammarly-AI:
-    name: "Grammarly AI"
-    description: "Correcteur grammatical avec IA"
-    monthly_cost: 12.00              # 12$/mois (environ 11€)
-    estimated_tokens_per_month: 100000  # 100K tokens/mois
-    co2_per_month: 0.05             # 0.05 kg CO2/mois
-    provider: "Grammarly"
-    category: "saas"
-    saas_type: "subscription"
-
+    name: Grammarly AI
+    description: Correcteur grammatical avec IA
+    monthly_cost: 12.0
+    estimated_tokens_per_month: 100000
+    co2_per_month: 0.05
+    provider: Grammarly
+    category: saas
+    saas_type: subscription
+    source: https://www.grammarly.com/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Otter-AI:
-    name: "Otter.ai"
-    description: "Transcription audio avec IA"
-    monthly_cost: 10.00              # 10$/mois (environ 9.2€)
-    estimated_tokens_per_month: 150000  # 150K tokens/mois
-    co2_per_month: 0.075            # 0.075 kg CO2/mois
-    provider: "Otter.ai"
-    category: "saas"
-    saas_type: "subscription"
-
+    name: Otter.ai
+    description: Transcription audio avec IA
+    monthly_cost: 10.0
+    estimated_tokens_per_month: 150000
+    co2_per_month: 0.075
+    provider: Otter.ai
+    category: saas
+    saas_type: subscription
+    source: https://otter.ai/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Descript:
-    name: "Descript"
-    description: "Éditeur audio/vidéo avec IA"
-    monthly_cost: 15.00              # 15$/mois (environ 13.8€)
-    estimated_tokens_per_month: 200000  # 200K tokens/mois
-    co2_per_month: 0.1               # 0.1 kg CO2/mois
-    provider: "Descript"
-    category: "saas"
-    saas_type: "subscription"
-
+    name: Descript
+    description: Éditeur audio/vidéo avec IA
+    monthly_cost: 15.0
+    estimated_tokens_per_month: 200000
+    co2_per_month: 0.1
+    provider: Descript
+    category: saas
+    saas_type: subscription
+    source: https://www.descript.com/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Runway-ML:
-    name: "Runway ML"
-    description: "Création vidéo par IA"
-    monthly_cost: 15.00              # 15$/mois (environ 13.8€)
-    estimated_tokens_per_month: 100000  # 100K tokens/mois
-    co2_per_month: 0.2               # 0.2 kg CO2/mois
-    provider: "Runway ML"
-    category: "saas"
-    saas_type: "subscription"
-
+    name: Runway ML
+    description: Création vidéo par IA
+    monthly_cost: 15.0
+    estimated_tokens_per_month: 100000
+    co2_per_month: 0.2
+    provider: Runway ML
+    category: saas
+    saas_type: subscription
+    source: https://runwayml.com/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   Stable-Diffusion:
-    name: "Stable Diffusion"
-    description: "Génération d'images par IA"
-    monthly_cost: 0.00               # Open source (coût API variable)
-    estimated_tokens_per_month: 50000   # 50K tokens/mois (estimation)
-    co2_per_month: 0.1               # 0.1 kg CO2/mois
-    provider: "Stability AI"
-    category: "open-source"
-    saas_type: "api"
-
+    name: Stable Diffusion
+    description: Génération d'images par IA
+    monthly_cost: 0.0
+    estimated_tokens_per_month: 50000
+    co2_per_month: 0.1
+    provider: Stability AI
+    category: open-source
+    saas_type: api
+    source: https://stability.ai/
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
   DALL-E:
-    name: "DALL-E 3"
-    description: "Génération d'images par IA (OpenAI)"
-    monthly_cost: 0.00               # Pay as you go
-    estimated_images_per_month: 100    # 100 images/mois
-    co2_per_month: 0.2               # 0.2 kg CO2/mois
-    provider: "OpenAI"
-    category: "proprietary"
-    saas_type: "api"
-
-
-# Mots-clés pour la détection des abonnements IA
+    name: DALL-E 3
+    description: Génération d'images par IA (OpenAI)
+    monthly_cost: 0.0
+    estimated_images_per_month: 100
+    co2_per_month: 0.2
+    provider: OpenAI
+    category: proprietary
+    saas_type: api
+    source: https://openai.com/pricing
+    date_maj: '2024-11-01'
+    niveau_confiance: publie_par_fournisseur
 ai_keywords:
-  - "ChatGPT"
-  - "GPT-4"
-  - "GPT-3"
-  - "Copilot"
-  - "Notion AI"
-  - "Midjourney"
-  - "Canva Magic"
-  - "Canva AI"
-  - "Jasper"
-  - "WriteSonic"
-  - "Grammarly AI"
-  - "Otter.ai"
-  - "Descript"
-  - "Runway"
-  - "Stable Diffusion"
-  - "DALL-E"
-  - "Anthropic"
-  - "Claude"
-  - "Mistral"
-  - "Llama"
-  - "API"
-  - "tokens"
-  - "IA"
-  - "AI"
-  - "Intelligence Artificielle"
-  - "Machine Learning"
-  - "LLM"
-  - "Large Language Model"
-
-  - "Jasper"
-  - "WriteSonic"
-  - "Grammarly AI"
-  - "Otter.ai"
-  - "Descript"
-  - "Runway"
-  - "Stable Diffusion"
-  - "DALL-E"
-  - "Anthropic"
-  - "Claude"
-  - "Gemini"
-  - "Cohere"
-  - "Command"
-
-# Facteur de conversion CO2 -> km en voiture (moyenne : 200g CO2/km)
+- ChatGPT
+- GPT-4
+- GPT-3
+- Copilot
+- Notion AI
+- Midjourney
+- Canva Magic
+- Canva AI
+- Jasper
+- WriteSonic
+- Grammarly AI
+- Otter.ai
+- Descript
+- Runway
+- Stable Diffusion
+- DALL-E
+- Anthropic
+- Claude
+- Mistral
+- Llama
+- API
+- tokens
+- IA
+- AI
+- Intelligence Artificielle
+- Machine Learning
+- LLM
+- Large Language Model
+- Jasper
+- WriteSonic
+- Grammarly AI
+- Otter.ai
+- Descript
+- Runway
+- Stable Diffusion
+- DALL-E
+- Anthropic
+- Claude
+- Gemini
+- Cohere
+- Command
 co2_to_car_km_factor: 0.2
-
-# Seuils pour les badges de maturité (en € et g CO2)
 badges:
   gold:
-    name: "🥇 Or - Expert"
+    name: 🥇 Or - Expert
     max_cost: 50
     max_co2: 250
     score: 100
-    
   silver:
-    name: "🥈 Argent - Avancé"
+    name: 🥈 Argent - Avancé
     max_cost: 200
     max_co2: 1000
     score: 80
-    
   bronze:
-    name: "🥉 Bronze - Intermédiaire"
+    name: 🥉 Bronze - Intermédiaire
     max_cost: 500
     max_co2: 2500
     score: 60
-    
   sufficient:
-    name: "✅ Suffisant"
+    name: ✅ Suffisant
     max_cost: 1000
     max_co2: 5000
     score: 40
-    
   insufficient:
-    name: "⚠️ Insuffisant"
+    name: ⚠️ Insuffisant
     max_cost: 5000
     max_co2: 25000
     score: 20
-
-# Seuils pour le score GreenOps (A à E)
 greenops_scores:
   A:
-    name: "A - Excellent"
+    name: A - Excellent
     max_cost_per_employee: 10
     max_co2_per_employee: 50
-    min_dormant_licenses: 95  # % de licences actives
-    
+    min_dormant_licenses: 95
   B:
-    name: "B - Bon"
+    name: B - Bon
     max_cost_per_employee: 25
     max_co2_per_employee: 125
     min_dormant_licenses: 90
-    
   C:
-    name: "C - Moyen"
+    name: C - Moyen
     max_cost_per_employee: 50
     max_co2_per_employee: 250
     min_dormant_licenses: 80
-    
   D:
-    name: "D - À améliorer"
+    name: D - À améliorer
     max_cost_per_employee: 100
     max_co2_per_employee: 500
     min_dormant_licenses: 60
-    
   E:
-    name: "E - Critique"
+    name: E - Critique
     max_cost_per_employee: 1000
     max_co2_per_employee: 5000
     min_dormant_licenses: 0

@@ -8,7 +8,7 @@ Le score GreenOps va de A (Excellent) à E (Critique).
 """
 
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 import yaml
 

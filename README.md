@@ -11,8 +11,8 @@
 🔹 **Version 2.0** - Spécialement adaptée pour les PME avec :
 - **Tracker Shadow AI** : Détection automatique des abonnements IA dans vos factures
 - **Score GreenOps** : Évaluation de A à E de votre performance
-- **Génération de rapports CSRD** : Conformité réglementaire
-- **Calcul des économies potentielles** : Identifiez les licences dormantes
+- **Génération de rapports CSRD** : Export structuré selon les attendus ESRS E1 — ne constitue pas une conformité juridique garantie
+- **Estimation des économies potentielles** : Identifiez les licences dormantes (calcul basé sur les données importées)
 
 ---
 
@@ -91,18 +91,18 @@ Sobre vous aide à :
 
 ### **🧮 Calculateur API**
 - Calcul du **coût** pour les modèles IA (GPT-4, Mistral-7B, Llama-2, etc.)
-- Calcul de **l'empreinte carbone** (basé sur des données scientifiques)
+- Calcul de **l'empreinte carbone** (ESTIMÉ - voir [Méthodologie](docs/METHODOLOGIE.md))
 - Comparaison entre modèles pour un même nombre de tokens
 - Recommandations pour optimiser vos coûts
 
 ### **🔄 Comparaison entre Modèles**
 - Comparez tous les modèles pour un nombre de tokens donné
 - Visualisations graphiques (coût, CO₂, score)
-- Identification du **meilleur choix** pour votre usage
+- Identification du modèle le plus économique pour votre usage (ESTIMÉ)
 
 ### **📄 Générateur de Rapports**
 - **Rapport de Résumé** : Vue d'ensemble des coûts et CO₂
-- **Rapport CSRD** : Rapport complet pour la conformité réglementaire
+- **Rapport CSRD** : Export structuré selon ESRS E1 — ne constitue pas une conformité juridique garantie
 - Export au format **PDF**
 
 ---
@@ -124,11 +124,11 @@ Sobre vous aide à :
    - **CO₂ total mensuel** : Empreinte carbone totale (en g et équivalent km voiture)
    - **Score GreenOps** : Note de A à E selon votre performance
    - **Licences dormantes** : Abonnements inutilisés à désactiver
-   - **Économies potentielles** : Montant que vous pourriez économiser
+   - **Estimation des économies potentielles** : Montant que vous pourriez économiser (basé sur les licences dormantes détectées)
 
 4. **Générez un rapport** :
    - **Rapport de Résumé** : Pour une vue d'ensemble rapide
-   - **Rapport CSRD** : Pour la conformité réglementaire
+   - **Rapport CSRD** : Export structuré selon ESRS E1 — voir [Méthodologie](docs/METHODOLOGIE.md)
 
 **Exemple de fichier CSV valide** :
 ```csv
@@ -284,7 +284,7 @@ Les mots-clés pour détecter les abonnements IA sont définis dans `config/mode
 | ChatGPT Plus | 0.3 kg CO₂/mois | Basé sur GPT-4 |
 | GitHub Copilot | 0.15 kg CO₂/mois | [Microsoft Sustainability Report](https://news.microsoft.com/sustainability/) |
 
-> ⚠️ **Note** : Les données CO₂ sont des **estimations moyennes** basées sur des études scientifiques. Pour des valeurs précises, consultez les rapports officiels des fournisseurs.
+> ⚠️ **Note** : Les données CO₂ sont des **estimations** basées sur des études scientifiques. Voir [docs/METHODOLOGIE.md](docs/METHODOLOGIE.md) pour les sources, dates, et limites.
 
 ---
 
@@ -308,7 +308,7 @@ Le **score GreenOps** évalue la performance de votre PME en fonction de :
 |-------|-------|------|-----------------|
 | **Freemium** | PME avec < 5 abonnements | Gratuit | Tracker Shadow AI, calculs de base |
 | **Pro** | PME avec ≥ 5 abonnements | 20€/mois | Accès illimité, rapports détaillés |
-| **CSRD** | Rapports de conformité | 100€/rapport | Rapport CSRD complet (PDF) |
+| **CSRD** | Export structuré ESRS E1 | 100€/rapport | Export PDF selon ESRS E1 — validation requise |
 
 ---
 

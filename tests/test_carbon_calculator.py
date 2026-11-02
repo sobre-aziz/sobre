@@ -6,8 +6,7 @@ Exécutez avec: pytest tests/test_carbon_calculator.py -v
 
 import pytest
 
-from utils.carbon_calculator import (MODELS, SAAS_SUBSCRIPTIONS,
-                                     calculate_api_carbon,
+from utils.carbon_calculator import (calculate_api_carbon,
                                      calculate_saas_carbon,
                                      calculate_total_carbon,
                                      get_model_carbon_per_token,

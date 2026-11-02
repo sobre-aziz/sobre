@@ -10,8 +10,7 @@ Fonctionnalités:
     - Import et traitement des fichiers CSV/PDF
 """
 
-import re
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
@@ -160,9 +159,6 @@ def identify_dormant_licenses(
     # Vérifier si la colonne 'last_used' existe
     if "last_used" not in usage_df.columns:
         return dormant_licenses
-
-    # Calculer la date seuil (aujourd'hui - threshold_days)
-    threshold_date = datetime.now() - timedelta(days=threshold_days)
 
     for sub in subscriptions:
         # Vérifier si cet abonnement a une utilisation récente
