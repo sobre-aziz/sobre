@@ -40,10 +40,10 @@ jobs:
         sys.path.insert(0, '.')
         from utils.config_updater import update_config
         import json
+        import os
         
         try:
             results = update_config()
-            print('UPDATE_RESULTS=' + json.dumps(results))
             
             # Compter les succès et échecs
             total_success = (
@@ -60,19 +60,24 @@ jobs:
             print(f'Total success: {total_success}')
             print(f'Total failed: {total_failed}')
             
+            # Ecrire les résultats dans GITHUB_OUTPUT
+            with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                f.write(f'update_results={json.dumps(results)}\n')
+                
             # Déterminer si on doit commiter
             if total_success > 0:
-                print('CHANGES_DETECTED=true') >> $GITHUB_ENV
+                with open(os.environ['GITHUB_ENV'], 'a') as f:
+                    f.write('CHANGES_DETECTED=true\n')
             else:
-                print('CHANGES_DETECTED=false') >> $GITHUB_ENV
+                with open(os.environ['GITHUB_ENV'], 'a') as f:
+                    f.write('CHANGES_DETECTED=false\n')
                 
         except Exception as e:
             print(f'Error: {e}')
-            print('CHANGES_DETECTED=false') >> $GITHUB_ENV
+            with open(os.environ['GITHUB_ENV'], 'a') as f:
+                f.write('CHANGES_DETECTED=false\n')
             sys.exit(1)
-        " >> $GITHUB_OUTPUT
-      env:
-        UPDATE_RESULTS: ${{ steps.update.outputs.results }}
+        "
     
     - name: Check for changes
       id: check_changes
@@ -84,20 +89,19 @@ jobs:
         else
           echo "CHANGES=false" >> $GITHUB_OUTPUT
         fi
-      id: changes
     
     - name: Commit and push changes
-      if: steps.changes.outputs.CHANGES == 'true'
+      if: env.CHANGES_DETECTED == 'true' || steps.check_changes.outputs.CHANGES == 'true'
       run: |
         git config --global user.name "github-actions"
         git config --global user.email "github-actions@github.com"
         
         # Ajouter tous les fichiers modifiés
-        git add config/models.yaml .cache/config_cache.json .cache/last_update.txt
+        git add config/models.yaml config/sources.yaml .cache/config_cache.json .cache/last_update.txt
         
         # Créer un message de commit
         TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S")
-        git commit -m "🤖 Auto-update: Pricing and CO2 factors (${TIMESTAMP})"
+        git commit -m "🔄 Auto-update: Pricing and CO2 factors (${TIMESTAMP})"
         
         # Pousser les changements
         git push origin main
@@ -109,7 +113,7 @@ jobs:
       uses: actions/github-script@v7
       with:
         script: |
-          const results = JSON.parse(process.env.UPDATE_RESULTS || '{}');
+          const results = JSON.parse('${{ steps.update.outputs.update_results }}' || '{}');
           const message = `
             ❌ **Mise à jour automatique échouée**
             
@@ -120,34 +124,6 @@ jobs:
             **Action:** Vérifiez les logs pour plus de détails.
           `;
           
-          await github.rest.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: 1,  # Numéro de l'issue pour les notifications
-            body: message
-          });
-      env:
-        UPDATE_RESULTS: ${{ steps.update.outputs.UPDATE_RESULTS }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Notify on success
-      if: success() && steps.changes.outputs.CHANGES == 'true'
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const results = JSON.parse(process.env.UPDATE_RESULTS || '{}');
-          const message = `
-            ✅ **Mise à jour automatique réussie**
-            
-            **Modèles:** ${results.models_pricing?.success?.length || 0} mis à jour, ${results.models_pricing?.failed?.length || 0} échecs
-            **SaaS:** ${results.saas_pricing?.success?.length || 0} mis à jour, ${results.saas_pricing?.failed?.length || 0} échecs
-            **CO2:** ${results.co2_factors?.success?.length || 0} mis à jour, ${results.co2_factors?.failed?.length || 0} échecs
-            
-            **Commit:** ${context.sha}
-            **Timestamp:** ${new Date().toISOString()}
-          `;
-          
-          // Créer un commentaire sur l'issue #1 ou envoyer une notification
           try {
             await github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -159,7 +135,36 @@ jobs:
             console.log('Impossible de créer un commentaire:', e.message);
           }
       env:
-        UPDATE_RESULTS: ${{ steps.update.outputs.UPDATE_RESULTS }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Notify on success
+      if: success() && (env.CHANGES_DETECTED == 'true' || steps.check_changes.outputs.CHANGES == 'true')
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const results = JSON.parse('${{ steps.update.outputs.update_results }}' || '{}');
+          const message = `
+            ✅ **Mise à jour automatique réussie**
+            
+            **Modèles:** ${results.models_pricing?.success?.length || 0} mis à jour, ${results.models_pricing?.failed?.length || 0} échecs
+            **SaaS:** ${results.saas_pricing?.success?.length || 0} mis à jour, ${results.saas_pricing?.failed?.length || 0} échecs
+            **CO2:** ${results.co2_factors?.success?.length || 0} mis à jour, ${results.co2_factors?.failed?.length || 0} échecs
+            
+            **Commit:** ${context.sha}
+            **Timestamp:** ${new Date().toISOString()}
+          `;
+          
+          try {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 1,
+              body: message
+            });
+          } catch (e) {
+            console.log('Impossible de créer un commentaire:', e.message);
+          }
+      env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   check-updates:
@@ -194,10 +199,14 @@ jobs:
         
         # Vérifier que la configuration est valide
         import yaml
-        with open('config/models.yaml', 'r') as f:
-            config = yaml.safe_load(f)
-        
-        assert 'models' in config, 'Modèles manquants'
-        assert 'saas_subscriptions' in config, 'SaaS manquants'
-        print('✅ Configuration valide')
+        try:
+            with open('config/models.yaml', 'r') as f:
+                config = yaml.safe_load(f)
+            
+            assert 'models' in config, 'Modèles manquants'
+            assert 'saas_subscriptions' in config, 'SaaS manquants'
+            print('✅ Configuration valide')
+        except Exception as e:
+            print(f'❌ Erreur de validation: {e}')
+            sys.exit(1)
         "
